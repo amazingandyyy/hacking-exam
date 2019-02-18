@@ -94,4 +94,6 @@ function completeHacking(result){
   process.exit(0)
 }
 
-module.export = breakQuestion()
+breakQuestion();
+
+module.exports = breakQuestion;
