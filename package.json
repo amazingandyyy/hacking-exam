@@ -4,7 +4,7 @@
   "description": "Break those stupit online exams.",
   "main": "index.js",
   "bin": {
-    "cheat": "./index.js"
+    "hack": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
