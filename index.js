@@ -55,8 +55,8 @@ function getAnswer(item, index) {
     const hash = option.attr().value.replace('64-', '');
     const result = rev(hash);
     const resultNum = Number(result.str);
-    // console.log(`option ${i+1}: ${resultNum}`);
-    console.log('.'.repeat(i+1));
+    // console.log(`option ${i+1} ${hash} ${resultNum}`);
+    console.log(`${resultNum} ${'.'.repeat(i+1)}`);
     if(resultNum){
       if(resultNum<smallest){
         smallest = resultNum;

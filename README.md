@@ -1,5 +1,5 @@
 # Hacking Exam
-When they simpily use md5 in those stypit online accessments, breaking those stupit online exams become a necessary.
+When they simpily use md5 in those stupit online accessments, breaking those stupit online exams become a necessary.
 
 
 ## Usage
