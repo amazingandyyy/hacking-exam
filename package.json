@@ -1,0 +1,17 @@
+{
+  "name": "stupit-cheater",
+  "version": "0.0.6",
+  "description": "Break those stupit online exams.",
+  "main": "index.js",
+  "bin": {
+    "cheat": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "reverse-md5": "0.0.4"
+  }
+}
