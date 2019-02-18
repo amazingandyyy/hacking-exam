@@ -21,70 +21,77 @@ const $ = cheerio.load(HTML)
 const questions = $('#quiz .quiz-list > li');
 const docTitle = $('title').html();
 const totleQ = $(questions).length;
+process.stdout.write("\u001b[2J\u001b[0;0H");
 console.log('\n');
-console.log('=====================================')
+console.log('================================================')
 console.log(`BREAKING EXAM ${docTitle}`)
 console.log(`TOTAL QUESTIONS: ${totleQ} questions`);
-console.log(`ESTIMATED TIME: ${Number(totleQ)*7.6*3.5} seconds`);
-console.log('=====================================')
+console.log(`ESTIMATED TIME: ${Number($('input[type="radio"]').length)*7.6} seconds`);
+console.log('================================================')
 console.log('\n');
 
 const result = {};
-
-function breakQuestion(i){
+function breakQuestion(i=0){
   if(i == totleQ) {
-    return printResult(result);
+    return completeHacking(result);
   };
   const quizItem = $(questions[i]);
   const title = quizItem.find('.item-head h4').html().replace(/\n\t\t\t/g, ' ');
-  console.log(title);
+  console.log(title.trim());
   result[i] = {
-    title: title,
-  }
-  getAnswer($(quizItem).find('input[type="radio"]'), i)
+    title: '',
+    answer: '',
+    label: ''
+  };
+  result[i].title = title;
+  getAnswer(quizItem, i);
 }
 
-const tf = ['True', 'False'];
-const mt = ['A', 'B', 'C', 'D', 'E', 'F']
-
-function getAnswer(item, index) {
-  let smallest = 10000000;
-  let answer;
-  for(let i=0;i<item.length;i++) {
-    const option = $(item[i]);
+function getAnswer(quizItem, index) {
+  let items = $(quizItem).find('input[type="radio"]');
+  let isMulti = items.length>2;
+  let labels = $(quizItem).find('label');
+  let optionsLength = items.length;
+  let answerList = (optionsLength==2)?['True', 'False']:['A', 'B', 'C', 'D', 'E', 'F'];
+  let smallest;
+  let answerIndex;
+  let answerLabel;
+  process.stdout.write(`\x1b[90m  Analyzing... 0%\x1b[0m`);
+  for(let i=0;i<optionsLength;i++) {
+    const option = $(items[i]);
+    const label = $(labels[i]).html();
     const hash = option.attr().value.replace('64-', '');
     const result = rev(hash);
-    const resultNum = Number(result.str);
-    // console.log(`option ${i+1} ${hash} ${resultNum}`);
-    console.log(`${resultNum} ${'.'.repeat(i+1)}`);
-    if(resultNum){
-      if(resultNum<smallest){
-        smallest = resultNum;
-        answer = i;
-      }
+    const decodedValue = Number(result.str);
+    process.stdout.write("\r\x1b[K");
+    process.stdout.write(`\x1b[90m  Analyzing...${'.'.repeat(i)} ${Math.ceil(100/optionsLength)*Number(i+1)}%\x1b[0m`);
+    // console.log(`${decodedValue} ${'.'.repeat(i+1)}`);
+    if(!smallest || (decodedValue<smallest)) {
+      smallest = decodedValue;
+      answerIndex = i;
+      answerLabel = label;
     }
   }
-  if(item.length==2){
-    result[index] = {
-      answer: tf[answer]
-    }
-    console.log('Answer:', tf[answer]);
+  result[index].answer = answerList[answerIndex];
+  result[index].label = answerLabel;
+  process.stdout.write("\r\x1b[K");
+  if(isMulti){
+    // console.log(`\x1b[32m  ✅ ${answerLabel.split(')')[1]}\x1b[0m`);
+    console.log(`\x1b[32m  ✅ ${answerLabel.split(')')[1]}\x1b[0m`);
   }else{
-    result[index] = {
-      answer: mt[answer]
-    }
-    console.log('Answer:', mt[answer]);
+    console.log(`\x1b[32m  ✅ ${answerList[answerIndex]}\x1b[0m`);
   }
   console.log('\n')
   breakQuestion(index+1);
 }
 
-function printResult(result){
-  console.log('===============  SUMMARY  ===============');
+function completeHacking(result){
+  console.log('=======================  SUMMARY  =======================');
   for(let i=0;i<totleQ;i++) {
-    console.log(i+1, result[i].answer);
+    console.log(`${i+1}) ${result[i].label}`);
   }
-  console.log('=============== COMPLETED ===============');
+  console.log('======================= COMPLETED =======================');
+  process.exit(0)
 }
 
-breakQuestion(0)
+module.export = breakQuestion()
