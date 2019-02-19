@@ -1,16 +1,6 @@
 const cheerio = require('cheerio')
-const ReverseMd5 = require('reverse-md5')
 const fs = require('fs');
-
-var rev = ReverseMd5({
-  lettersUpper: false,
-	lettersLower: false,
-	numbers: true,
-	special: false,
-	whitespace: false,
-	maxLen: 7
-})
-
+const md5breaker = require('./md5breaker');
 let $;
 const result = {};
 let questions;
@@ -22,10 +12,17 @@ function lib(filePath){
   questions = $('#quiz .quiz-list > li');
   const docTitle = $('title').html();
   totleQ = $(questions).length;
+  const optionsLength = $('input[type="radio"]').length;
   console.log('==========================================================')
   console.log(`                       ${docTitle}`)
-  console.log(`              TOTAL QUESTIONS: ${totleQ} questions`);
-  console.log(`               ESTIMATED TIME: ${Number($('input[type="radio"]').length)*7.6} seconds`);
+  console.log(`             Loading ${totleQ} questions(${optionsLength} choices)...`);
+  const now = Date.now();
+  md5breaker('7d88d860ae1b327042c38877dd9eca76');
+  const milliseconds = (Date.now() - now);
+  const seconds = optionsLength*milliseconds/1000;
+  const totalMinutes = Math.floor(seconds/60);
+  const totalSeconds = Math.floor(seconds%60);
+  console.log(`              ESTIMATED TIME: ${totalMinutes} mins ${totalSeconds} secs`);
   console.log('==========================================================')
   console.log('\n');
   breakQuestion(0);
@@ -60,7 +57,7 @@ function getAnswer(quizItem, index) {
     const option = $(items[i]);
     const label = $(labels[i]).html();
     const hash = option.attr().value.replace('64-', '');
-    const result = rev(hash);
+    const result = md5breaker(hash);
     const decodedValue = Number(result.str);
     let loadingProcess = Math.floor(100/optionsLength)*Number(i+1);
     process.stdout.write("\r\x1b[K");
@@ -77,9 +74,9 @@ function getAnswer(quizItem, index) {
   process.stdout.write("\r\x1b[K");
   if(isMulti){
     // console.log(`\x1b[32m  ☺ ${answerLabel.split(')')[1]}\x1b[0m`);
-    console.log(`\x1b[32m  ☺ ${answerLabel.split(')')[1]}\x1b[0m`);
+    console.log(`\x1b[32m  ${answerLabel.split(')')[1]}\x1b[0m`);
   }else{
-    console.log(`\x1b[32m  ☺ ${answerList[answerIndex]}\x1b[0m`);
+    console.log(`\x1b[32m  ${answerList[answerIndex]}\x1b[0m`);
   }
   console.log('\n')
   breakQuestion(index+1);
