@@ -1,6 +1,6 @@
 {
   "name": "hacking-exam",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Break those stupit online exams.",
   "main": "index.js",
   "bin": {
