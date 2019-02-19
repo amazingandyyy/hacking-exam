@@ -8,7 +8,7 @@ process.stdout.write("\u001b[2J\u001b[0;0H");
 CFonts.say('Hacking|Exam!', {
   // font: 'chrome',              // define the font face
   // align: 'left',              // define text alignment
-  colors: ['yellow', 'green', 'cyan'],         // define all colors
+  colors: ['magentaBright', 'whiteBright', 'candy'],         // define all colors
   background: 'transparent',  // define the background color, you can also use `backgroundColor` here as key
   letterSpacing: 0,           // define letter spacing
   lineHeight: 1,              // define the line height
