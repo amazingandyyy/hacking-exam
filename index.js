@@ -5,6 +5,7 @@ let $;
 const result = {};
 let questions;
 let totleQ;
+const now = Date.now();
 
 function lib(filePath){
   const HTML = fs.readFileSync(filePath, 'utf-8');
@@ -16,16 +17,20 @@ function lib(filePath){
   console.log('==========================================================')
   console.log(`                       ${docTitle}`)
   console.log(`             Loading ${totleQ} questions(${optionsLength} choices)...`);
-  const now = Date.now();
   md5breaker('7d88d860ae1b327042c38877dd9eca76');
+  const [totalMinutes, totalSeconds] = toNow(now, optionsLength);
+  console.log(`              It will take about ${totalMinutes} mins ${totalSeconds} secs`);
+  console.log('==========================================================')
+  console.log('\n');
+  breakQuestion(0);
+}
+
+function toNow(now, optionsLength=1) {
   const milliseconds = (Date.now() - now);
   const seconds = optionsLength*milliseconds/1000;
   const totalMinutes = Math.floor(seconds/60);
   const totalSeconds = Math.floor(seconds%60);
-  console.log(`              ESTIMATED TIME: ${totalMinutes} mins ${totalSeconds} secs`);
-  console.log('==========================================================')
-  console.log('\n');
-  breakQuestion(0);
+  return [totalMinutes, totalSeconds]
 }
 
 function breakQuestion(i=0){
@@ -74,7 +79,7 @@ function getAnswer(quizItem, index) {
   process.stdout.write("\r\x1b[K");
   if(isMulti){
     // console.log(`\x1b[32m  ☺ ${answerLabel.split(')')[1]}\x1b[0m`);
-    console.log(`\x1b[32m  ${answerLabel.split(')')[1]}\x1b[0m`);
+    console.log(`\x1b[32m  ${answerLabel.split(') ')[1]}\x1b[0m`);
   }else{
     console.log(`\x1b[32m  ${answerList[answerIndex]}\x1b[0m`);
   }
@@ -83,6 +88,8 @@ function getAnswer(quizItem, index) {
 }
 
 function completeHacking(result){
+  const [totalMinutes, totalSeconds] = toNow(now);
+  console.log(`It only took ${totalMinutes} mins ${totalSeconds} secs to finish this exam`);
   console.log('=======================  SUMMARY  =======================');
   for(let i=0;i<totleQ;i++) {
     console.log(`${i+1})\t${result[i].answer}`);
